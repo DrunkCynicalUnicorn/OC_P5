@@ -2,6 +2,10 @@ import requests
 
 
 class ApiReader():
+
+	"""
+	!!! ADD A DOCSTRING !!!
+	"""
     
     url = "https://fr-en.openfoodfacts.org/cgi/search.pl"
     
