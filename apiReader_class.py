@@ -112,9 +112,10 @@ class ApiReader():
             
  
                 
-api_reader = ApiReader()
-clean_data = list(api_reader.get_data())      
-print(clean_data, len(clean_data), sep="\n")
+if __name__=="__main__":
+	api_reader = ApiReader()
+	clean_data = list(api_reader.get_data())      
+	print(clean_data, len(clean_data), sep="\n")
 
 
 
