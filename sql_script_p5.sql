@@ -5,9 +5,10 @@ USE p5;
 CREATE TABLE IF NOT EXISTS category
 	(
 		id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-		name VARCHAR(40) NOT NULL,
+		name VARCHAR(40) NOT NULL ,
 		
 		PRIMARY KEY (id)
+		UNIQUE INDEX ind_category_name(name)
 	)
 	ENGINE = INNODB;
 
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS product
 		nutriscore CHAR(1) NOT NULL,
 		url VARCHAR(50) NOT NULL
 		category_id SMALLINT UNSIGNED NOT NULL,
+		description VARCHAR(150) NOT NULL
 		# !!! add a column for product description !!!
 		
 		PRIMARY KEY (id),
@@ -35,6 +37,7 @@ CREATE TABLE IF NOT EXISTS store
 		name VARCHAR(40) NOT NULL,
 		
 		PRIMARY KEY (id)
+		UNIQUE INDEX ind_store_name(name)
 	)
 	ENGINE = INNODB;
 

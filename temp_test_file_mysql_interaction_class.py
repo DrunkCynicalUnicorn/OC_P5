@@ -73,29 +73,38 @@ def create_tables(sql_cmd_list):
 
 
 
-
-
-# TO DO before going on :
-# !!! find a reference field for description column !!!
-# !!! need to look in detail how to fill fk fields !!!
-        # first idea : 
-            # => compare data['category'] and category.name : if it matches,
-            # set product.category_id to category.id 
 """
 def load_data(data):
     try:
         with connection.cursor() as cursor:
-            for category in data:
-                for product in category:
+            for category_data in data:
+                for product_data in category_data:
                     cursor.execute(
-                    INSERT INTO 'category'('name') VALUES(product['category']),
                     
-                    INSERT INTO 'product'('name', 'url', 'nutriscore', 
-                    'description') VALUES (product['product_name_fr'], product['url'],
-                    product['nutrition_grade_fr'], product['description']),
+                    INSERT INTO category(name) 
+                    VALUES(product_data['category']),
                     
-                    INSERT INTO 'store'('name') VALUES ('product'['stores'])
-                    )
+                    INSERT INTO product(name, url, nutriscore, 
+                    description) VALUES (product_data['product_name_fr'], 
+                    product_data['url'], product_data['nutrition_grade_fr'], 
+                    product_data['description']),             
+                    
+                    INSERT INTO product(category_id) VALUES ((SELECT id FROM
+                    category WHERE category.name = product_data['category']))
+                    
+                    
+                    stores_list = product_data['stores'].split(',')
+                    for store_data in stores_list:
+                        store_data = store_data.strip()
+                        cursor.execute(
+                        INSERT INTO store(name) VALUES (product_data['stores'])
+                        
+                        INSERT INTO 
+                        product_store_association(product_id, store_id)
+                        VALUES (
+                        (SELECT id FROM product WHERE store.name = product_data['store']),
+                        (SELECT id FROM store WHERE store.name = product_data['store'])
+                        )
 
 """
 
