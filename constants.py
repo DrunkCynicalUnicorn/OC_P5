@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-
-                        ### API's CONSTANTS ###
+                                    ### API's CONSTANTS ###
 
 url = "https://fr-en.openfoodfacts.org/cgi/search.pl"
     
@@ -22,9 +21,9 @@ categories = {
 
 product_nb_per_category = 70
 
-                        ### MySQL 's CONSTANTS ###
+                                    ### MySQL 's CONSTANTS ###
 
-        ## Tables creation command :
+        ## Table creation commands :
         
 tables_creation_cmds_list = [
     """ CREATE TABLE IF NOT EXISTS category
@@ -77,16 +76,23 @@ tables_creation_cmds_list = [
 
 
 
-        ## Tables filling commands : 
+        ## Table filling commands :
 
 table_filling_cmds_dict = {
-    "category_filler":"""INSERT IGNORE INTO category(name) 
+
+        "category_filler": """INSERT IGNORE INTO category(name) 
             VALUES(%(category)s);""",
-    
-    "product_filler" : """INSERT INTO product(name, url, nutriscore, 
+   
+        "product_filler": """INSERT INTO product(name, url, nutriscore, 
                 category_id) 
             VALUES (%(product_name_fr)s,  %(url)s,  %(nutrition_grade_fr)s, 
             (SELECT id FROM category 
             WHERE category.name = %(category)s));""",
     
-    "store_name_filler" : """INSERT IGNORE INTO store(name) VALUES (%s);"""}
+        "store_name_filler" : """INSERT IGNORE INTO store(name) VALUES (%s);}""",
+
+        "store_product_association_builder": """INSERT INTO product_store_association(product_id, store_id)
+        VALUES (SELECT id FROM product WHERE product.name = %s, SELECT id FROM store 
+        WHERE store.name = %s;"""
+        }
+

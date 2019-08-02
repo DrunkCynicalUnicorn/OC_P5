@@ -88,12 +88,18 @@ class ApiReader():
 
         return cleaned_data
 
+
+
+
                          
 if __name__=="__main__":
     api_reader = ApiReader()
     clean_data = list(api_reader.get_data())
     print(clean_data, len(clean_data), sep="\n")
     print(clean_data[0], len(clean_data[0]), sep="\n")
+    
+    
+ 
 
 
 
