@@ -42,8 +42,8 @@ tables_creation_cmds_list = [
 		id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,   
 		name VARCHAR(100) NOT NULL,
 		nutriscore CHAR(1) NOT NULL,
-		url VARCHAR(140) NOT NULL,
-        description VARCHAR(200),
+		url VARCHAR(200) NOT NULL,
+        description VARCHAR(200) NOT NULL,
 		category_id SMALLINT UNSIGNED NOT NULL,
 		
 		PRIMARY KEY (id),
@@ -78,21 +78,24 @@ tables_creation_cmds_list = [
 
         ## Table filling commands :
 
-table_filling_cmds_dict = {
 
-        "category_filler": """INSERT IGNORE INTO category(name) 
-            VALUES(%(category)s);""",
+
+cat_filler = """INSERT IGNORE INTO category(name) VALUES(%s);"""
    
-        "product_filler": """INSERT INTO product(name, url, nutriscore, 
-                category_id) 
-            VALUES (%(product_name_fr)s,  %(url)s,  %(nutrition_grade_fr)s, 
-            (SELECT id FROM category 
-            WHERE category.name = %(category)s));""",
+prod_filler = """INSERT INTO product(category_id, name, description, url, nutriscore) 
+        VALUES ((SELECT id FROM category WHERE category.name = %s), %s,  %s,  %s, %s );"""
     
-        "store_name_filler" : """INSERT IGNORE INTO store(name) VALUES (%s);}""",
+store_filler = """INSERT IGNORE INTO store(name) VALUES (%s);"""
 
-        "store_product_association_builder": """INSERT INTO product_store_association(product_id, store_id)
-        VALUES (SELECT id FROM product WHERE product.name = %s, SELECT id FROM store 
-        WHERE store.name = %s;"""
-        }
+store_prod_association_builder = """INSERT INTO product_store_association(product_id)
+        VALUES ((SELECT id FROM product WHERE product.name = %s));"""
 
+
+sql_cmd2 = """INSERT INTO product_store_association(store_id) VALUES (SELECT id FROM store WHERE store.name = %s);"""
+
+
+
+# alternate prod_filler func using dict syntax to fill variable fields
+#"""INSERT INTO product(name, description, url, nutriscore, category_id)
+#        VALUES (%('product_name_fr')s,  %('description')s,  %('url')s, %('nutrition_grade_fr')s,
+#        (SELECT id FROM category WHERE category.name = %s));"""

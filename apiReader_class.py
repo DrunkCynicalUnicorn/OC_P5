@@ -69,7 +69,7 @@ class ApiReader():
                     and product["url"] != "" \
                     and product["nutrition_grade_fr"] != "" \
                     and product["stores"] != "" \
-                    and product["generic_name_fr"] != "" :
+                    and product["generic_name_fr"] != "":
                         cleaned_data.append(
                                 {
                                 "category" : category,
@@ -77,7 +77,7 @@ class ApiReader():
                                 "url" : product["url"],
                                 "nutrition_grade_fr" : 
                                     product["nutrition_grade_fr"],
-                                "stores" : product["stores"].strip().split(","),
+                                "stores" : product["stores"].split(","),
                                 "description" : product["generic_name_fr"]
                                 })
                         products_count += 1
