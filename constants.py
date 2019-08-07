@@ -87,11 +87,8 @@ prod_filler = """INSERT INTO product(category_id, name, description, url, nutris
     
 store_filler = """INSERT IGNORE INTO store(name) VALUES (%s);"""
 
-store_prod_association_builder = """INSERT INTO product_store_association(product_id)
-        VALUES ((SELECT id FROM product WHERE product.name = %s));"""
-
-
-sql_cmd2 = """INSERT INTO product_store_association(store_id) VALUES (SELECT id FROM store WHERE store.name = %s);"""
+store_prod_association_builder = """INSERT INTO product_store_association(product_id, store_id)
+        VALUES ((SELECT id FROM product WHERE product.name = %s), (SELECT id FROM store WHERE store.name = %s));"""
 
 
 
