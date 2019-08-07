@@ -6,7 +6,14 @@ import constants
 
 class ApiReader():
     
+    """ 
+    ApiReader 's object is dedicated to api requests. Its attributes are 
+    params elements of the requests.get method, so that special attribute 
+    __dict__ allows to automatically build up the attributes dict the requests
+    function needs, while each param remains easily upgradable 
+    """
     
+
     def __init__(self):
         
         self.action = "process"
@@ -38,14 +45,14 @@ class ApiReader():
         return clean_data 
         
                       
-
     def data_cleaner(self, data, category):
 
         """
         This func automatically receives raw api json type objects, 
         corresponding to a predefined 1/10 category of food, and returns a 
         complete and clean list of data, composed by the requirred size 
-        and fields
+        and fields. Params are the data itself, and the name of the name of the
+        currently processed category
         """
         
         cleaned_data = list()
@@ -70,8 +77,7 @@ class ApiReader():
                     and product["nutrition_grade_fr"] != "" \
                     and product["stores"] != "" \
                     and product["generic_name_fr"] != "":
-                        cleaned_data.append(
-                                {
+                        cleaned_data.append({
                                 "category" : category,
                                 "product_name_fr" : product["product_name_fr"],
                                 "url" : product["url"],
@@ -80,26 +86,30 @@ class ApiReader():
                                 "stores" : product["stores"].split(","),
                                 "description" : product["generic_name_fr"]
                                 })
+                        
+                        for i, store_name in enumerate(cleaned_data[
+                                len(cleaned_data) - 1]['stores']):
+                            cleaned_data[len(cleaned_data) - 1]['stores'][i] =\
+                                store_name.strip().lower().capitalize()
+                        
                         products_count += 1
+                    
                     else :
                         continue
+            
             except KeyError:
                 continue           
 
         return cleaned_data
 
-
-
-
                          
 if __name__=="__main__":
     api_reader = ApiReader()
     clean_data = list(api_reader.get_data())
-    print(clean_data, len(clean_data), sep="\n")
-    print(clean_data[0], len(clean_data[0]), sep="\n")
+    print(clean_data, len(clean_data), sep="\n") # is ok
+    print(clean_data[0], len(clean_data[0]), sep="\n") # is ok
     
-    
- 
+
 
 
 

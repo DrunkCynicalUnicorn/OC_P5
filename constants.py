@@ -75,24 +75,20 @@ tables_creation_cmds_list = [
 	ENGINE = INNODB; """]
 
 
-
         ## Table filling commands :
 
+mysql_insert_cmds = {
+        "cat_filler" : """INSERT IGNORE INTO category(name) VALUES(%s);""",
+        
+        "prod_filler" : """INSERT INTO product(category_id, name, description, 
+            url, nutriscore) 
+            VALUES ((SELECT id FROM category WHERE category.name = %s), 
+            %s,  %s,  %s, %s );""",
+                    
+        "store_filler" : """INSERT IGNORE INTO store(name) VALUES (%s);""",
+        
+        "store_prod_assoc_builder" : """INSERT INTO 
+            product_store_association (product_id, store_id) 
+            VALUES (%s, (SELECT id FROM store WHERE store.name = %s));"""
+        }
 
-
-cat_filler = """INSERT IGNORE INTO category(name) VALUES(%s);"""
-   
-prod_filler = """INSERT INTO product(category_id, name, description, url, nutriscore) 
-        VALUES ((SELECT id FROM category WHERE category.name = %s), %s,  %s,  %s, %s );"""
-    
-store_filler = """INSERT IGNORE INTO store(name) VALUES (%s);"""
-
-store_prod_association_builder = """INSERT INTO product_store_association(product_id, store_id)
-        VALUES ((SELECT id FROM product WHERE product.name = %s), (SELECT id FROM store WHERE store.name = %s));"""
-
-
-
-# alternate prod_filler func using dict syntax to fill variable fields
-#"""INSERT INTO product(name, description, url, nutriscore, category_id)
-#        VALUES (%('product_name_fr')s,  %('description')s,  %('url')s, %('nutrition_grade_fr')s,
-#        (SELECT id FROM category WHERE category.name = %s));"""
