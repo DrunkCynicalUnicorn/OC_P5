@@ -45,6 +45,8 @@ tables_creation_cmds_list = [
 		url VARCHAR(200) NOT NULL,
         description VARCHAR(200) NOT NULL,
 		category_id SMALLINT UNSIGNED NOT NULL,
+		substitute BOOLEAN NOT NULL DEFAULT 0,
+		origin_search VARCHAR(100) NULL DEFAULT NULL,
 		
 		PRIMARY KEY (id),
 		FOREIGN KEY (category_id) REFERENCES category(id)
@@ -78,17 +80,37 @@ tables_creation_cmds_list = [
         ## Table filling commands :
 
 mysql_insert_cmds = {
-        "cat_filler" : """INSERT IGNORE INTO category(name) VALUES(%s);""",
+        "cat_filler": """INSERT IGNORE INTO category(name) VALUES(%s);""",
         
-        "prod_filler" : """INSERT INTO product(category_id, name, description, 
+        "prod_filler": """INSERT INTO product(category_id, name, description, 
             url, nutriscore) 
             VALUES ((SELECT id FROM category WHERE category.name = %s), 
             %s,  %s,  %s, %s );""",
                     
-        "store_filler" : """INSERT IGNORE INTO store(name) VALUES (%s);""",
+        "store_filler": """INSERT IGNORE INTO store(name) VALUES (%s);""",
         
-        "store_prod_assoc_builder" : """INSERT INTO 
+        "store_prod_assoc_builder": """INSERT INTO 
             product_store_association (product_id, store_id) 
             VALUES (%s, (SELECT id FROM store WHERE store.name = %s));"""
         }
 
+
+        ## SQL queries :
+
+mysql_select_cmds = {
+    "select_categories": """ SELECT id, name FROM category ORDER BY id ASC; """,
+    "select_products_per_category": """SELECT product.id, product.name FROM product INNER JOIN 
+            category ON product.category_id = category.id WHERE category.id = %s 
+            ORDER BY product.id ASC ;""",
+    "find_substitute": """ SELECT id, name, description, url FROM product
+        WHERE nutriscore <= (SELECT nutriscore FROM product WHERE id = %s) AND category_id = (SELECT
+        category_id FROM product WHERE id = %s) ORDER BY nutriscore ASC LIMIT 1;""",
+    "select_stores_substitute": """SELECT name FROM store INNER JOIN 
+        product_store_association ON store.id = product_store_association.store_id 
+        WHERE product_store_association.product_id = %s;"""
+    }
+
+set_favorite_cmd = """UPDATE product SET substitute=True, origin_search = %s
+    WHERE id = %s;"""
+
+get_favorites_cmd = """SELECT name, description, url, origin_search FROM product WHERE substitute = True;"""

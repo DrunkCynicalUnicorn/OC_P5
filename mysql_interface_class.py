@@ -27,6 +27,12 @@ class MySQLInterface():
         
         self.sql_insert_cmds = constants.mysql_insert_cmds
 
+        self.sql_select_cmds = constants.mysql_select_cmds
+
+        self.set_fav_cmd = constants.set_favorite_cmd
+
+        self.get_substitutes_cmd = constants.get_favorites_cmd
+
 
     def create_tables(self):
         
@@ -52,11 +58,9 @@ class MySQLInterface():
         
         for category_data in data:
             category = category_data[0]['category']
-        
             self.cursor.execute(self.sql_insert_cmds["cat_filler"], 
                                 (category,))
             self.connection.commit()
-
 
             for product_data in category_data:
                 product_fields = (product_data['category'], 
@@ -71,7 +75,6 @@ class MySQLInterface():
                 # must not commit, here or later : commit seems to be auto and 
                 # doing it manually can participate to raise a 
                 #"command out of sync" error...
-
 
                 for store in list(set(product_data['stores'])):
                     if store not in known_stores:
@@ -89,13 +92,81 @@ class MySQLInterface():
                             self.sql_insert_cmds["store_prod_assoc_builder"], 
                             association_keys)
 
-
         self.connection.commit()
+
+
+    def get_categories(self):
+        
+        """ This method returns a list of category'is and category's name 
+        tuples, to be formated and print out by the displayer object """
+        
+        self.cursor.execute(self.sql_select_cmds["select_categories"])
+        return self.cursor.fetchall()
+ 
+    
+    def get_products_per_category(self, category_id):
+        
+        """ This method is charged of fetching all products for one given
+        category. Receives one positional arg from the displayer class object,
+        the category_id corresponding to the category chosen by the user """
+
+        self.cursor.execute(self.sql_select_cmds["select_products_per_category"], (str(category_id),))
+        return self.cursor.fetchall()
+    
+    
+    def find_substitute(self, product_id):
+
+        """ This method determines is charged of finding a better food, based on the nutriscore.
+        Takes one positional argument, the original product's id selected"""
+
+        substitute_data = list()
+
+        self.cursor.execute(self.sql_select_cmds["find_substitute"], (product_id, product_id))
+        substitute_data.append(self.cursor.fetchall()[0])
+
+        substitute_id = substitute_data[0][0]
+        self.cursor.execute(self.sql_select_cmds["select_stores_substitute"], (substitute_id,))
+        substitute_data.append(self.cursor.fetchall()[0])
+
+        return substitute_data
+
+
+    def set_favorite(self, product_id, substitute_data): # TO TEST
+
+        """ This method registers a product as a favorite by setting its substitute field to True.
+        Takes two positional args : the original product id, and the substitute data, in the datastructure
+        provided by self.find_substitute() precedent method """
+
+        self.cursor.execute("""SELECT name FROM product WHERE id = %s;""", (product_id,))
+        original_product = self.cursor.fetchall()
+        self.cursor.execute(self.set_fav_cmd, (str(original_product), substitute_data[0][0]))
+
+
+    def get_all_substitutes(self): #TO TEST
+
+        """ This method queries the DB to retrieve all products marked as substitutes by the user.
+        Does not need any argument """
+
+        self.cursor.execute(self.get_substitutes_cmd)
+        return self.cursor.fetchall()
+
+
+
+        
+        
 
 
 if __name__ == "__main__":
     import apiReader_class as api
     api_reader = api.ApiReader()
     mysql_interface = MySQLInterface()
+    
     mysql_interface.create_tables() # is ok
     mysql_interface.load_data(api_reader.get_data()) # is ok
+    
+    categories = mysql_interface.get_categories()
+    products_per_cat = mysql_interface.get_products_per_category(7)
+    print(categories, products_per_cat, sep="\n") # is ok
+
+    substitute = mysql_interface.find_substitute(355)
+    print(substitute) # is ok

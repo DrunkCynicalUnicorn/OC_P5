@@ -29,8 +29,8 @@ class ApiReader():
 
         """
         This func runs a get request to the api, iterating on
-        each category defined in classvar 'categories', and automatically
-        cleans the data received by calling the data_cleaner class method.
+        each category defined in constant var 'categories', and automatically
+        cleans the data received by calling the data_cleaner object method.
 
         Then returns a clean_data list which can be processed like this:
 
@@ -61,7 +61,7 @@ class ApiReader():
         for product in data["products"]:
             # this try block is here to avoid what seems to be
             # an api failure : when a product's field is empty, the field name
-            # itself can't be used for key indexation : an empty requirred 
+            # itself can't be used for key indexation : an empty required
             # field in the requests.Response object will drive to a KeyError
             try:
                 if product["product_name_fr"] is not None \
