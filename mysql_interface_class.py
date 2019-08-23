@@ -140,6 +140,7 @@ class MySQLInterface():
         self.cursor.execute("""SELECT name FROM product WHERE id = %s;""", (product_id,))
         original_product = self.cursor.fetchall()
         self.cursor.execute(self.set_fav_cmd, (str(original_product), substitute_data[0][0]))
+        print("\nYou have just set this product as one of your favorite products\n")
 
 
     def get_all_substitutes(self): #TO TEST

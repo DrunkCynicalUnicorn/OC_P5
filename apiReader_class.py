@@ -51,7 +51,7 @@ class ApiReader():
         This func automatically receives raw api json type objects, 
         corresponding to a predefined 1/10 category of food, and returns a 
         complete and clean list of data, composed by the requirred size 
-        and fields. Params are the data itself, and the name of the name of the
+        and fields. Params are the data itself, and the name of the
         currently processed category
         """
         
