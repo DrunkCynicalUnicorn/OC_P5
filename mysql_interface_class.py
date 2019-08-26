@@ -4,6 +4,7 @@ import mysql.connector
 import constants
 
 
+
 class MySQLInterface():
 
     """
@@ -14,14 +15,16 @@ class MySQLInterface():
     updatable in the constants file, which points to the same requests
     """
     
-    def __init__(self):
+    def __init__(self, login, password):
         self.connection = mysql.connector.connect(host='localhost',
-                             user='consumer',
-                             password='password',
+                             user=login,
+                             password=password,
                              database='p5_db',
                              charset='utf8')
     
         self.cursor = self.connection.cursor()
+        
+        self.check_db_state = constants.check_db_state
         
         self.sql_architecture_cmds = constants.tables_creation_cmds_list
         
@@ -45,6 +48,11 @@ class MySQLInterface():
             self.cursor.execute(sql_cmd)
         self.connection.commit()
 
+
+    def db_checker(self):
+        self.cursor.execute(self.check_db_state)
+        return self.cursor.rowcount
+    
 
     def load_data(self, data):
         
@@ -126,7 +134,7 @@ class MySQLInterface():
 
         substitute_id = substitute_data[0][0]
         self.cursor.execute(self.sql_select_cmds["select_stores_substitute"], (substitute_id,))
-        substitute_data.append(self.cursor.fetchall()[0])
+        substitute_data.append(self.cursor.fetchall())
 
         return substitute_data
 
@@ -140,6 +148,7 @@ class MySQLInterface():
         self.cursor.execute("""SELECT name FROM product WHERE id = %s;""", (product_id,))
         original_product = self.cursor.fetchall()
         self.cursor.execute(self.set_fav_cmd, (str(original_product), substitute_data[0][0]))
+        self.connection.commit()
         print("\nYou have just set this product as one of your favorite products\n")
 
 

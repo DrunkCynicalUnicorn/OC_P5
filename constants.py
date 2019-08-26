@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+
                                     ### API's CONSTANTS ###
 
 url = "https://fr-en.openfoodfacts.org/cgi/search.pl"
@@ -22,6 +23,8 @@ categories = {
 product_nb_per_category = 70
 
                                     ### MySQL 's CONSTANTS ###
+
+check_db_state = """SELECT name FROM category"""
 
         ## Table creation commands :
         

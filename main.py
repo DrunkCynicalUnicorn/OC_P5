@@ -3,15 +3,19 @@
 import apiReader_class as api
 import mysql_interface_class as sql
 import displayer_class as display
+import mysql_credentials_getter
+
+mysql_cred = dict(mysql_credentials_getter.get_credentials())
 
 
 api_reader = api.ApiReader()
-sql_interface = sql.MySQLInterface()
+sql_interface = sql.MySQLInterface(mysql_cred["login"], mysql_cred["password"])
 displayer = display.Displayer()
 
 
-sql_interface.create_tables() 
-sql_interface.load_data(api_reader.get_data())
+sql_interface.create_tables()
+if sql_interface.db_checker == 0: 
+    sql_interface.load_data(api_reader.get_data())
 
 
 use_it = True

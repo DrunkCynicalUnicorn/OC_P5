@@ -12,7 +12,7 @@ class Displayer():
 
         """ This method prints the start interactive menu """
 
-        print("1. Go to food categories", "2. Go to your favorite substitutes", sep="\n")
+        print("\n1. Go to food categories", "2. Go to your favorite substitutes", sep="\n")
         valid_choice = False
         while not valid_choice:
             user_input = input("\nSelect the number corresponding to your choice then hit 'Enter' : ")
@@ -78,7 +78,9 @@ class Displayer():
         """ This method prints out a substitute dataset and asks the user for selecting this substitute
         as a favorite substitute for this product.
         Takes one positional arg : the product id to replace by a substitute """
-        stores_list = list(data[1])
+        stores_list = [store[0] for store in data[1]]
+        print(data)
+        print(stores_list)
         stores = ", ".join(stores_list)
         print(f"\nProduct name : {data[0][1]}\nDescription : {data[0][2]}\nURL : {data[0][3]}\nStores to buy this"
               f" product : {stores}\n")
@@ -96,7 +98,7 @@ class Displayer():
         Does not need any arg to work out """
 
         for fav in favorites:
-            print(f"\nProduct : {fav[0]}\nDescription : {fav[1]}\nURL : {fav[2]}\nIs your substitute for {fav[3]}\n\n\n")
+            print(f"\nProduct : {fav[0]}\nDescription : {fav[1]}\nURL : {fav[2]}\nIs your substitute for {eval(fav[3])[0][0]}\n\n\n")
 
 
 
