@@ -4,8 +4,7 @@ import requests
 import constants
 
 
-class ApiReader():
-    
+class ApiReader():  
     """ 
     ApiReader 's object is dedicated to api requests. Its attributes are 
     params elements of the requests.get method, so that special attribute 
@@ -26,7 +25,6 @@ class ApiReader():
         
         
     def get_data(self, url=constants.url, categories=constants.categories) :
-
         """
         This func runs a get request to the api, iterating on
         each category defined in constant var 'categories', and automatically
@@ -45,8 +43,7 @@ class ApiReader():
         return clean_data 
         
                       
-    def data_cleaner(self, data, category):
-
+    def data_cleaner(self, data, category): 
         """
         This func automatically receives raw api json type objects, 
         corresponding to a predefined 1/10 category of food, and returns a 

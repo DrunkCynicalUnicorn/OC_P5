@@ -5,7 +5,7 @@ import mysql_interface_class as sql
 import displayer_class as display
 import mysql_credentials_getter
 
-mysql_cred = dict(mysql_credentials_getter.get_credentials())
+mysql_cred = mysql_credentials_getter.get_credentials()
 
 
 api_reader = api.ApiReader()
@@ -14,7 +14,7 @@ displayer = display.Displayer()
 
 
 sql_interface.create_tables()
-if sql_interface.db_checker == 0: 
+if sql_interface.db_checker() == 0: 
     sql_interface.load_data(api_reader.get_data())
 
 
@@ -31,14 +31,16 @@ while use_it :
         prod_id = displayer.print_products_per_category(products_per_cat)
         
         substitute_data = sql_interface.find_substitute(int(prod_id))
-        tag_prod = displayer.print_substitute_data(substitute_data, int(prod_id))
+        tag_prod = displayer.print_substitute_data(substitute_data, 
+                                                   int(prod_id))
         if tag_prod.lower() == "y":
             sql_interface.set_favorite(int(prod_id), substitute_data)
     else:
         favorites = sql_interface.get_all_substitutes()
         displayer.print_all_favorites(favorites)
     
-    restart_or_leave = input("\nTape 'y' to go back to start selection page, anything else to leave the program : ")
+    restart_or_leave = input("\nTape 'y' to go back to start selection page, \
+                             anything else to leave the program : ")
     if restart_or_leave.lower() == "y":
         continue
     else:
